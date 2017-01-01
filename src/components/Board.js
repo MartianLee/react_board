@@ -7,27 +7,27 @@ class Board extends React.Component {
   render(){
     return (
       <div>
-        <Contacts/>
+        <Posts/>
       </div>
     );
   }
 }
 
-class Contacts extends React.Component {
+class Posts extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      contactData: [
-        {name: "Martian", phone: "올 한해 열심히 해보겠습니다!"},
-        {name: "king7282", phone: "아무것도하기싫다!!"},
-        {name: "choiking10", phone: "주변 사람들 모두 행복했으면 좋겠어요."},
-        {name: "hyo123bin", phone: "취업 했으면 좋겠습니다ㅠㅠ"}
+      postData: [
+        {title: "Martian", contents: "올 한해 열심히 해보겠습니다!"},
+        {title: "king7282", contents: "아무것도하기싫다!!"},
+        {title: "choiking10", contents: "주변 사람들 모두 행복했으면 좋겠어요."},
+        {title: "hyo123bin", contents: "취업 했으면 좋겠습니다ㅠㅠ"}
       ],
       selectedKey: -1,
       selected:{
-        name: "",
-        phone: ""
+        title: "",
+        contents: ""
       }
     };
 
@@ -37,23 +37,23 @@ class Contacts extends React.Component {
     alert("GOAL!!!!");
   }
 
-  _insertContact(name, phone){
+  _insertPost(title, contents){
     let newState = update(this.state, {
-      contactData: {
-        $push: [{"name": name, "phone": phone}]
+      postData: {
+        $push: [{"title": title, "contents": contents}]
       }
     });
     this.setState(newState);
   }
 
-  _removeContact(){
+  _removePost(){
     if(this.state.selectedKey == - 1){
       console.log("contact not selected");
       return;
     }
     /*
     let deletedState = update(this.state,{
-      contactData:{
+      postData:{
         $splice: [[this.state.selectedKey, 1]]
       },
       selectedKey: -1
@@ -61,30 +61,34 @@ class Contacts extends React.Component {
     this.setState(deletedState);
     */
     this.setState({
-      contactData: update(
-        this.state.contactData,
+      postData: update(
+        this.state.postData,
         {
           $splice:[[this.state.selectedKey, 1]]
         }
       ),
-      selectedKey: -1
+      selectedKey: -1,
+      selected:{
+        title: "",
+        contents: ""
+      }
     });
   }
 
-  _editContact(name, phone){
+  _editPost(title, contents){
     this.setState({
-      contactData:update(
-        this.state.contactData,
+      postData:update(
+        this.state.postData,
         {
           [this.state.selectedKey]:{
-            name: { $set: name },
-            phone: { $set: phone }
+            title: { $set: title },
+            contents: { $set: contents }
           }
         }
       ),
       selected:{
-        name: name,
-        phone: phone
+        title: title,
+        contents: contents
       }
     });
   }
@@ -95,8 +99,8 @@ class Contacts extends React.Component {
        this.setState({
          selectedKey: -1,
          selected:{
-           name: "",
-           phone: ""
+           title: "",
+           contents: ""
          }
        });
        return;
@@ -104,7 +108,7 @@ class Contacts extends React.Component {
 
      this.setState({
        selectedKey: key,
-       selected: this.state.contactData[key]
+       selected: this.state.postData[key]
      });
      console.log(key + " is selected");
   }
@@ -122,9 +126,9 @@ class Contacts extends React.Component {
       <div>
         <h1>Board<button onClick={this.sayHey}>Shoot!!</button></h1>
         <ul>
-          {this.state.contactData.map((contact, i) => {
-              return (<ContactInfo name={contact.name}
-                                  phone={contact.phone}
+          {this.state.postData.map((contact, i) => {
+              return (<ContactInfo title={contact.title}
+                                  contents={contact.contents}
                                     key={i}
                                     contactKey={i}
                                     isSelected={this._isSelected.bind(this)(i)}
@@ -133,10 +137,10 @@ class Contacts extends React.Component {
         </ul>
         <div>
           <p> New Post </p>
-          <ContactCreator onInsert={this._insertContact.bind(this)}/>
+          <ContactCreator onInsert={this._insertPost.bind(this)}/>
         </div>
-        <ContactRemover onRemove={this._removeContact.bind(this)}/>
-        <ContactEditor onEdit={this._editContact.bind(this)}
+        <ContactRemover onRemove={this._removePost.bind(this)}/>
+        <ContactEditor onEdit={this._editPost.bind(this)}
                       isSelected={(this.state.selectedKey != -1)}
                       contact={this.state.selected}/>
       </div>
@@ -153,7 +157,7 @@ class ContactInfo extends React.Component {
       this.props.onSelect(this.props.contactKey);
   }
   render() {
-    console.log("rendered: " + this.props.name);
+    console.log("rendered: " + this.props.title);
     let getStyle = isSelect => {
       if(!isSelect){
         let style = {
@@ -172,9 +176,9 @@ class ContactInfo extends React.Component {
     return(
       <li
        onClick={this.handleClick.bind(this)}>
-       <p>Title : {this.props.name}</p>
+       <p>Title : {this.props.title}</p>
        <p style={getStyle(this.props.isSelected)}>
-       {this.props.phone}</p>
+       {this.props.contents}</p>
        </li>
       );
   }
@@ -200,26 +204,26 @@ class ContactCreator extends React.Component {
       super(props);
       // Configure default state
       this.state = {
-          name: "",
-          phone: ""
+          title: "",
+          contents: ""
       };
    }
 
    handleClick(){
-     if (this.state.name=="" || this.state.phone==""){
+     if (this.state.title=="" || this.state.contents==""){
         alert("Please Fill All Required Field");
         return;
       }
-       this.props.onInsert(this.state.name, this.state.phone);
+       this.props.onInsert(this.state.title, this.state.contents);
        this.setState({
-           name: "",
-           phone: ""
+           title: "",
+           contents: ""
        });
    }
 
    handleChange(e){
       var nextState = {};
-      nextState[e.target.name] = e.target.value;
+      nextState[e.target.title] = e.target.value;
       this.setState(nextState);
    }
 
@@ -228,16 +232,16 @@ class ContactCreator extends React.Component {
        <div>
         <p>
           <input type="text"
-            name="name"
+            title="title"
             placeholder="title"
-            value={this.state.name}
+            value={this.state.title}
             onChange={this.handleChange.bind(this)}/>
         </p>
         <p>
           <input type="textarea"
-          name="phone"
+          title="contents"
           placeholder="content"
-          value={this.state.phone}
+          value={this.state.contents}
           onChange={this.handleChange.bind(this)}/>
         </p>
         <button onClick={this.handleClick.bind(this)}>Write</button>
@@ -250,15 +254,15 @@ class ContactEditor extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      name:"",
-      phone:""
+      title:"",
+      contents:""
     }
   }
 
   componentWillReceiveProps(nextProps){
     this.setState({
-      name: nextProps.contact.name,
-      phone: nextProps.contact.phone
+      title: nextProps.contact.title,
+      contents: nextProps.contact.contents
     });
   }
 
@@ -267,12 +271,12 @@ class ContactEditor extends React.Component{
       console.log("post not selected");
       return;
     }
-    this.props.onEdit(this.state.name, this.state.phone);
+    this.props.onEdit(this.state.title, this.state.contents);
   }
 
   handleChange(e){
     var nextState = {};
-      nextState[e.target.name] = e.target.value;
+      nextState[e.target.title] = e.target.value;
       this.setState(nextState);
   }
 
@@ -281,16 +285,16 @@ class ContactEditor extends React.Component{
       <div>
        <p>
          <input type="text"
-           name="name"
+           title="title"
            placeholder="title"
-           value={this.state.name}
+           value={this.state.title}
            onChange={this.handleChange.bind(this)}/>
        </p>
        <p>
          <input type="textarea"
-           name="phone"
+           title="contents"
            placeholder="content"
-           value={this.state.phone}
+           value={this.state.contents}
            onChange={this.handleChange.bind(this)}/>
        </p>
        <button onClick={this.handleClick.bind(this)}>Edit</button>
