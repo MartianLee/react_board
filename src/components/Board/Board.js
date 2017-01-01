@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import update from 'react-addons-update';
+import styles from './Board.css'
 
 class Board extends React.Component {
-
+  componentWillMount(){
+    document.body.style.margin = 0;
+    document.body.style.padding = 0;
+  }
   render(){
     return (
-      <div>
+      <div className = {styles.container}>
         <Posts/>
       </div>
     );
@@ -123,7 +127,7 @@ class Posts extends React.Component {
 
   render(){
     return(
-      <div>
+      <div className = {styles.contents}>
         <h1>Board<button onClick={this.sayHey}>Shoot!!</button></h1>
         <ul>
           {this.state.postData.map((contact, i) => {
@@ -135,14 +139,17 @@ class Posts extends React.Component {
                                     onSelect={this._onSelect.bind(this)}/>);
           })}
         </ul>
+        <ContactRemover onRemove={this._removePost.bind(this)}/>
         <div>
           <p> New Post </p>
           <ContactCreator onInsert={this._insertPost.bind(this)}/>
         </div>
-        <ContactRemover onRemove={this._removePost.bind(this)}/>
-        <ContactEditor onEdit={this._editPost.bind(this)}
-                      isSelected={(this.state.selectedKey != -1)}
-                      contact={this.state.selected}/>
+        <div>
+          <p> Edit Post </p>
+          <ContactEditor onEdit={this._editPost.bind(this)}
+                        isSelected={(this.state.selectedKey != -1)}
+                        contact={this.state.selected}/>
+        </div>
       </div>
     );
   }
