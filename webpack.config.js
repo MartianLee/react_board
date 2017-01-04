@@ -1,32 +1,50 @@
+var path = require('path');
+var webpack = require('webpack');
+
 module.exports = {
-    entry: './src/index.js',
+    entry: [
+        'babel-polyfill',
+        './src/index.js',
+        './src/style.css'
+    ],
 
     output: {
         path: __dirname + '/public/',
         filename: 'bundle.js'
     },
 
-    devServer: {
-        inline: true,
-        port: 7777,
-        contentBase: __dirname + '/public/'
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                loaders: ['babel?' + JSON.stringify({
+                    cacheDirectory: true,
+                    presets: ['es2015', 'react', 'stage-0']
+                })],
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.css$/,
+                loader: 'style!css-loader'
+            }
+        ]
     },
 
-    module: {
-            loaders: [
-                {
-                    test: /\.js$/,
-                    loader: 'babel',
-                    exclude: /node_modules/,
-                    query: {
-                        cacheDirectory: true,
-                        presets: ['es2015', 'react']
-                    }
-                },
-                {
-                  test: /\.css$/,
-                  loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
-                }
-            ]
-        }
+    resolve: {
+        root: path.resolve('./src')
+    },
+
+    plugins:[
+        new webpack.DefinePlugin({
+          'process.env':{
+            'NODE_ENV': JSON.stringify('production')
+          }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+          compress:{
+            warnings: true
+          }
+        })
+    ]
+
 };
