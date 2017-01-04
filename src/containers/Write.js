@@ -1,0 +1,87 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import {PostEditor, Warning} from '../components';
+import {postInsertRequest} from '../actions/post';
+
+class Write extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state={
+      postId: 1,
+      fetching: false,
+      post:{
+        title: '',
+        contents: '',
+        writer: ''
+      },
+      warningVisibility: false
+    };
+    this.handlePost = this.handlePost.bind(this);
+  }
+
+  handlePost(post){
+    console.log("움ㄴ아롬ㅈ디루ㅏ미;나ㅓㄹㄷㅈㅁ");
+    return this.props.postInsertRequest(post).then(
+      () => {
+        if(this.props.postStatus.status === "SUCCESS"){
+          console.log("SUCCESS");
+        }else{
+          let $toastContent;
+          switch(this.props.postStatus.error){
+            case 1:
+              console.log("error 1");
+              break;
+            default:
+              console.log("Something Wrong..");
+              break;
+          }
+        }
+      }
+    )
+  }
+
+  showWarning = () => {
+    this.setState({
+      warningVisibility: true
+    });
+    setTimeout(
+      () => {
+        this.setState({
+          warningVisibility: false
+        });
+      }, 1000
+    )
+  }
+
+  render() {
+
+    const {postId, fetching, post, warningVisibility} = this.state;
+
+    return (
+        <div>
+            글 쓰기
+            <PostEditor
+              onPost={this.handlePost}
+            />
+            <Warning visible={warningVisibility} message="Invalid Input"/>
+        </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    postStatus : state.post.post
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        postInsertRequest: (post) => {
+            return dispatch(postInsertRequest(post));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Write);
