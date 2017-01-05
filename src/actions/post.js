@@ -18,15 +18,72 @@ import {
     POST_UPDATE_FAILURE
 } from './ActionTypes';
 
-export function postListGetRequest(page){
+export function postListGetRequest(isInitial, listType, id, page){
   return (dispatch) => {
-
-    return axios.get(`/api/list/page={page}`,{page})
+    dispatch(postListGet());
+    let url = '/api/post/list/page=1';
+    return axios.get('/api/post/list/page=1')
+    .then((response) => {
+      dispatch(postListGetSuccess(response.data,isInitial,listType));
+    }).catch((error) => {
+      dispatch(postListGetFailure());
+    })
   }
 }
 
-export function postGetRequest(){
+export function postListGet(){
+  return{
+    type: POST_LIST_GET
+  };
+}
 
+
+export function postListGetSuccess(data, isInitial, listType){
+  return{
+    type: POST_LIST_GET_SUCCESS,
+    data,
+    isInitial,
+    listType
+  };
+}
+
+
+export function postListGetFailure(){
+  return{
+    type: POST_LIST_GET_FAILURE
+  };
+}
+
+
+export function postGetRequest(key){
+  console.log("되라좀 ㅜㅜ");
+  return (dispatch) => {
+    dispatch(postGet());
+    key="586da15753d4ed552434f6a7";
+    return axios.get('/api/post/view/'+ key)
+    .then((response) => {
+      dispatch(postGetSuccess(response.data));
+    }).catch((error) => {
+      dispatch(postGetFailure());
+    })
+  }
+}
+export function postGet(){
+  return{
+    type: POST_GET
+  };
+}
+export function postGetSuccess(){
+  console.log("석세스!!");
+  return{
+    type: POST_GET_SUCCESS
+  };
+}
+
+export function postGetFailure(){
+  return{
+    type: POST_LIST_GET_FAILURE
+  };
 }
 
 export function postInsertRequest(post){

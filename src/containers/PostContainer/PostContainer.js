@@ -34,7 +34,7 @@ class PostContainer extends Component{
       }, 1000
     )
   }
-
+  /*
   fetchPostInfo = async(postId) => {
 
     this.setState({
@@ -69,7 +69,7 @@ class PostContainer extends Component{
       console.log('error occured',e);
     }
   }
-
+  */
   handleNavigateClick = (type) => {
     const postId = this.state.postId;
 
@@ -98,9 +98,6 @@ class PostContainer extends Component{
           body={post.body}
           comments={comments}
         />
-        <button>수정</button>
-        <button>삭제</button>
-        <button>목록으로</button>
         <Warning visible={warningVisibility} message="That post does not exit"/>
       </PostWrapper>
     );

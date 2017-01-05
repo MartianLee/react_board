@@ -32,7 +32,7 @@ ReactDOM.render(
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
         <Route path="list" component={Home}/>
-        <Route path="view" component={View}/>
+        <Route path="view/:id" component={View}/>
         <Route path="write" component={Write}/>
       </Route>
     </Router>

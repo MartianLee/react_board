@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {PostEditor, Warning} from '../components';
+import {PostWriter, Warning} from '../components';
 import {postInsertRequest} from '../actions/post';
 
 class Write extends React.Component {
@@ -21,7 +21,6 @@ class Write extends React.Component {
   }
 
   handlePost(post){
-    console.log("움ㄴ아롬ㅈ디루ㅏ미;나ㅓㄹㄷㅈㅁ");
     return this.props.postInsertRequest(post).then(
       () => {
         if(this.props.postStatus.status === "SUCCESS"){
@@ -60,8 +59,7 @@ class Write extends React.Component {
 
     return (
         <div>
-            글 쓰기
-            <PostEditor
+            <PostWriter
               onPost={this.handlePost}
             />
             <Warning visible={warningVisibility} message="Invalid Input"/>

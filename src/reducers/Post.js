@@ -5,6 +5,16 @@ const initialState = {
     post:{
       status: 'INIT',
       error: -1
+    },
+    list:{
+      status: 'INIT',
+      data: [],
+      isLast: false
+    },
+    postget:{
+      status: 'INIT',
+      data: [],
+      isLast: false
     }
 };
 
@@ -33,6 +43,46 @@ export default function post(state, action) {
             error: { $set: action.error }
           }
         });
+      case types.POST_LIST_GET:
+        return update(state, {
+          list:{
+            status: {$set:'WAITING'}
+          }
+        })
+      case types.POST_LIST_GET_SUCCESS:
+        return update(state, {
+          list:{
+            status: {$set:'SUCCESS'},
+            data: {$set:action.data},
+            isLast: {$set: action.data.length < 6}
+          }
+        })
+      case types.POST_LIST_GET_FAILURE:
+        return update(state, {
+          list:{
+            status: {$set:'FAILURE'},
+          }
+        })
+      case types.POST_GET:
+        return update(state, {
+          list:{
+            status: {$set:'WAITING'}
+          }
+        })
+      case types.POST_GET_SUCCESS:
+        return update(state, {
+          postget:{
+            status: {$set:'SUCCESS'},
+            data: {$set:action.data},
+            isLast: {$set: action.data.length < 6}
+          }
+        })
+      case types.POST_GET_FAILURE:
+        return update(state, {
+          list:{
+            status: {$set:'FAILURE'},
+          }
+        })
       default:
         return state;
     }

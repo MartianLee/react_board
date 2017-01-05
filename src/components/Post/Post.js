@@ -7,72 +7,49 @@ class Post extends Component {
         super(props);
         this.state = {
             postInfo: {
-                title: null,
-                body: null,
-                comments: []
+                title: '',
+                contents: '',
+                writer: ''
             },
-            animate: false,
             direction: 'left'
         }
     }
 
-
-    componentWillReceiveProps (nextProps) {
-
-        const { title, body, comments } = nextProps;
-
-        if(this.props.postId !== nextProps.postId) {
-            // identify the animation direction
-            const direction = this.props.postId < nextProps.postId ? 'left' : 'right';
-
-            this.setState({
-                direction,
-                animate: true
-            });
-
-            // sync the props to state 0.5 sec later
-            setTimeout(
-                () => {
-                    this.setState({
-                        postInfo: {
-                            title, body, comments
-                        },
-                        animate: false
-                    })
-                }, 500
-            );
-            return;
-        }
-
-        // sync the props to state directly (this is the first post)
-        this.setState({
-            postInfo: {
-                title, body, comments
-            }
-        })
-    }
-
     render() {
-        const { title, body, comments } = this.state.postInfo;
-
-        const { animate, direction } = this.state;
-
-        const animation = animate
-                          ? (direction==='left' ? 'bounceOutLeft' : 'bounceOutRight')
-                          : (direction==='left' ? 'bounceInRight' : 'bounceInLeft');
-
-        // show nothing when data is not loaded
-        if(title===null) return null;
+        const { title, contents, writer } = this.props;
 
         return (
-            <div className={`Post animated ${animation}`}>
-                <h1>{title}</h1>
-                <p>
-                    {body}
-                </p>
-                <CommentList comments={comments}/>
+            <div className="WriteForm">
+              <div className="Post">
+                  <div className="Title">{title}</div>
+                  <div className="Contents">{contents}</div>
+                  <div className="Writer">{writer}</div>
+              </div>
+              <div className="PostPost">
+                <a className="ClickButton" onClick={this.handleGet} href="/">수정</a>
+                <a className="ClickButton" >삭제</a>
+                <a className="ClickButton" href="/">글 목록</a>
+              </div>
             </div>
         );
+    }
+}
+
+Post.propTypes = {
+    data: React.PropTypes.object
+};
+
+Post.defaultProps = {
+    data: {
+        _id: 'id1234567890',
+        writer: 'Martian',
+        title: 'Develop React',
+        contents: 'I love Football',
+        is_edited: false,
+        date: {
+            edited: new Date(),
+            created: new Date()
+        }
     }
 }
 

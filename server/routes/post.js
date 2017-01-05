@@ -48,12 +48,17 @@ router.post('/post', (req, res) => {
             code: 2
         });
     }
-
+    //I want to make post_id incremently
+    let c = Post.find()
+      .sort({"_id": -1})
+      .limit(1).pretty();
+    let updateVal = c.post_id+1;
+    //console.log(c);
     // CREATE NEW POST
     let postInfo = new Post({
         writer: req.body.post.writer,
         title: req.body.post.title,
-        contents: req.body.post.contents
+        contents: req.body.post.contents,
     });
 
     // SAVE IN DATABASE
@@ -164,23 +169,58 @@ router.delete('/delete/:id', (req, res) => {
 
 // GET POST LIST
 router.get('/list/page=:page', (req, res) => {
-  Post.find()
+  var c = Post.find()
     .sort({"_id": -1})
     .limit(10)
     .exec((err, posts) => {
         if(err) throw err;
         res.json(posts);
     });
+    /*
+  var count = c.count();
+  var i = c.count();
+  while(c.hasNext()){
+    var now = c.next();
+    Post.update(
+      {"_id":now._id},
+      {"$set":{"post_id":i}}
+    );
+    i--;
+  }
+  */
 });
 
 // GET POST
-router.get('/post/:id', (req, res) => {
+router.get('/view/:id', (req, res) => {
+  /*
+  var findVal = req.params.id*=-1;
   Post.find()
     .sort({"_id": -1})
     .limit(1)
     .exec((err, posts) => {
         if(err) throw err;
         res.json(posts);
+    });
+*/
+    // FIND POST
+    Post.findById(req.params.id, (err, post) => {
+        if(err) throw err;
+
+        // IF post DOES NOT EXIST
+        if(!post) {
+            return res.status(404).json({
+                error: "NO RESOURCE",
+                code: 4
+            });
+        }
+
+        post.save((err, post) => {
+            if(err) throw err;
+            return res.json({
+                post
+            });
+        });
+
     });
 });
 

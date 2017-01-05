@@ -4,6 +4,7 @@ import Navigator from './Navigator/Navigator';
 import Post from './Post/Post';
 import PostList from './PostList/PostList';
 import PostEditor from './PostEditor/PostEditor';
+import PostWriter from './PostEditor/PostEditor';
 import CommentList from './CommentList/CommentList';
 import Comment from './Comment/Comment';
 import Warning from './Warning/Warning';
@@ -13,6 +14,7 @@ export{
   PostList,
   PostWrapper,
   PostEditor,
+  PostWriter,
   Navigator,
   Post,
   CommentList,
